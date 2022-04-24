@@ -1,17 +1,23 @@
+from typing import (
+    Dict,
+    List,
+    Union
+)
 import requests
+from loguru import logger
+from reolink_api.alarm import AlarmAPIMixin
+from reolink_api.device import DeviceAPIMixin
+from reolink_api.display import DisplayAPIMixin
+from reolink_api.download import DownloadAPIMixin
+from reolink_api.image import ImageAPIMixin
+from reolink_api.motion import MotionAPIMixin
+from reolink_api.network import NetworkAPIMixin
+from reolink_api.ptz import PtzAPIMixin
+from reolink_api.recording import RecordingAPIMixin
 from reolink_api.resthandle import Request
-from .alarm import AlarmAPIMixin
-from .device import DeviceAPIMixin
-from .display import DisplayAPIMixin
-from .download import DownloadAPIMixin
-from .image import ImageAPIMixin
-from .motion import MotionAPIMixin
-from .network import NetworkAPIMixin
-from .ptz import PtzAPIMixin
-from .recording import RecordingAPIMixin
-from .system import SystemAPIMixin
-from .user import UserAPIMixin
-from .zoom import ZoomAPIMixin
+from reolink_api.system import SystemAPIMixin
+from reolink_api.user import UserAPIMixin
+from reolink_api.zoom import ZoomAPIMixin
 
 
 class APIHandler(AlarmAPIMixin,
@@ -35,7 +41,7 @@ class APIHandler(AlarmAPIMixin,
     All Code will try to follow the PEP 8 standard as described here: https://www.python.org/dev/peps/pep-0008/
     """
 
-    def __init__(self, ip: str, username: str, password: str, https=False, **kwargs):
+    def __init__(self, ip: str, username: str, password: str, https: bool = False, **kwargs):
         """
         Initialise the Camera API Handler (maps api calls into python)
         :param ip:
@@ -63,21 +69,22 @@ class APIHandler(AlarmAPIMixin,
             body = [{"cmd": "Login", "action": 0,
                      "param": {"User": {"userName": self.username, "password": self.password}}}]
             param = {"cmd": "Login", "token": "null"}
-            response = Request.post(self.url, data=body, params=param)
+            response = Request.post(self.url, data=body, params=param)  # type: requests.Response
             if response is not None:
                 data = response.json()[0]
                 code = data["code"]
                 if int(code) == 0:
                     self.token = data["value"]["Token"]["name"]
-                    print("Login success")
+                    logger.debug("Login success")
                     return True
-                print(self.token)
+                logger.debug(self.token)
                 return False
             else:
-                print("Failed to login\nStatus Code:", response.status_code)
+                # Response object was NoneType (empty)
+                logger.warning("Failed to login\nError in request.")
                 return False
         except Exception as e:
-            print("Error Login\n", e)
+            logger.error("Error Login\n", e)
             raise
 
     def logout(self) -> bool:
@@ -88,13 +95,12 @@ class APIHandler(AlarmAPIMixin,
         try:
             data = [{"cmd": "Logout", "action": 0}]
             self._execute_command('Logout', data)
-            # print(ret)
             return True
         except Exception as e:
-            print("Error Logout\n", e)
+            logger.error("Error Logout\n", e)
             return False
 
-    def _execute_command(self, command, data, multi=False):
+    def _execute_command(self, command: str, data: List[Dict], multi: bool = False) -> Union[bool, Dict]:
         """
         Send a POST request to the IP camera with given data.
         :param command: name of the command to send
@@ -122,12 +128,12 @@ class APIHandler(AlarmAPIMixin,
                             f.write(req.content)
                         return True
                     else:
-                        print(f'Error received: {req.status_code}')
+                        logger.error(f'Error received: {req.status_code}')
                         return False
 
             else:
                 response = Request.post(self.url, data=data, params=params)
-            return response.json()
+                return response.json()
         except Exception as e:
-            print(f"Command {command} failed: {e}")
+            logger.error(f"Command {command} failed: {e}")
             raise

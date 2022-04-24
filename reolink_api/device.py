@@ -1,11 +1,16 @@
-from typing import List
+from typing import (
+    Dict,
+    List,
+    Union
+)
+from loguru import logger
 
 
 class DeviceAPIMixin:
     """API calls for getting device information."""
     DEFAULT_HDD_ID = [0]
 
-    def get_hdd_info(self) -> object:
+    def get_hdd_info(self) -> Union[bool, Dict]:
         """
         Gets all HDD and SD card information from Camera
         See examples/response/GetHddInfo.json for example response data.
@@ -26,5 +31,5 @@ class DeviceAPIMixin:
         r_data = self._execute_command('Format', body)[0]
         if r_data["value"]["rspCode"] == 200:
             return True
-        print("Could not format HDD/SD. Camera responded with:", r_data["value"])
+        logger.warning(f"Could not format HDD/SD. Camera responded with: {r_data.get('value')}")
         return False

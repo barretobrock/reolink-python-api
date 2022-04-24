@@ -15,6 +15,17 @@ _Note: 'Unreleased' section below is used for untagged changes that will be issu
 #### Security
 __BEGIN-CHANGELOG__
  
+### [1.0.1] - 2022-04-24
+#### Added
+ - More type hints (albeit they'll need to be made more precise later)
+ - `PyYAML` was left out of requirements upon scanning the older `setup.py` file, so that was added & pinned
+#### Changed
+ - `print` statements are now log outputs
+ - Some dictionaries were simplified and optimized
+#### Fixed
+ - Minor variable misspellings
+ - `test_camera.py` now doesn't test a real camera connection
+ 
 ### [1.0.0] - 2022-04-23
 #### Added
  - `CHANGELOG.md`

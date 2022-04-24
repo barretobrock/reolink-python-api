@@ -1,3 +1,8 @@
+from typing import (
+    Dict,
+    List
+)
+
 
 class ImageAPIMixin:
     """API calls for image settings."""
@@ -18,7 +23,7 @@ class ImageAPIMixin:
                                drc: int = 128,
                                rotation: int = 0,
                                mirroring: int = 0,
-                               nr3d: int = 1) -> object:
+                               nr3d: int = 1) -> List[Dict]:
         """
         Sets the advanced camera settings.
 
@@ -70,7 +75,7 @@ class ImageAPIMixin:
                            contrast: int = 62,
                            hue: int = 1,
                            saturation: int = 125,
-                           sharpness: int = 128) -> object:
+                           sharpness: int = 128) -> List[Dict]:
         """
         Sets the camera image settings.
 

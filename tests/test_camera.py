@@ -1,39 +1,40 @@
-import os
-from configparser import RawConfigParser
 import unittest
 from reolink_api import Camera
-
-
-def read_config(props_path: str) -> dict:
-    """Reads in a properties file into variables.
-
-    NB! this config file is kept out of commits with .gitignore. The structure of this file is such:
-    # secrets.cfg
-        [camera]
-        ip={ip_address}
-        username={username}
-        password={password}
-    """
-    config = RawConfigParser()
-    assert os.path.exists(props_path), f"Path does not exist: {props_path}"
-    config.read(props_path)
-    return config
+from tests.common import make_patcher
 
 
 class TestCamera(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.config = read_config('../secrets.cfg')
+        pass
 
     def setUp(self) -> None:
-        self.cam = Camera(self.config.get('camera', 'ip'), self.config.get('camera', 'username'),
-                          self.config.get('camera', 'password'))
+        # Mock requests so these. tests don't touch external systems
+        self.mock_requests = make_patcher(self, 'reolink_api.resthandle.requests')
+        # Prime responses
+        self.mock_requests.post.return_value.status_code = 200
+        self.mock_requests.post.return_value.json.return_value = [
+            {
+                'code': '0',
+                'value': {
+                    'Token': {
+                        'name': 'somekindoftoken'
+                    }
+                }
+            }
+        ]
+
+        self.ip = '0.0.0.1'
+        self.un = 'someuser'
+        self.pw = 'somepw'
+        self.cam = Camera(ip=self.ip, username=self.un, password=self.pw)
 
     def test_camera(self):
         """Test that camera connects and gets a token"""
-        self.assertTrue(self.cam.ip == self.config.get('camera', 'ip'))
+        self.assertTrue(self.cam.ip == self.ip)
         self.assertTrue(self.cam.token != '')
+        self.mock_requests.post.assert_called()
 
 
 if __name__ == '__main__':

@@ -1,15 +1,19 @@
-from typing import Union, List, Dict
-from datetime import datetime as dt
+from typing import (
+    Union,
+    List,
+    Dict
+)
+from datetime import datetime
 
 
 # Type hints for input and output of the motion api response
 RAW_MOTION_LIST_TYPE = List[Dict[str, Union[str, int, Dict[str, str]]]]
-PROCESSED_MOTION_LIST_TYPE = List[Dict[str, Union[str, dt]]]
+PROCESSED_MOTION_LIST_TYPE = List[Dict[str, Union[str, datetime]]]
 
 
 class MotionAPIMixin:
     """API calls for past motion alerts."""
-    def get_motion_files(self, start: dt, end: dt = dt.now(),
+    def get_motion_files(self, start: datetime, end: datetime = datetime.now(),
                          streamtype: str = 'sub') -> PROCESSED_MOTION_LIST_TYPE:
         """
         Get the timestamps and filenames of motion detection events for the time range provided.
@@ -70,7 +74,7 @@ class MotionAPIMixin:
                 for k, v in replace_fields.items():
                     if k in raw.keys():
                         raw[v] = raw.pop(k)
-                time_range[x.lower()] = dt(**raw)
+                time_range[x.lower()] = datetime(**raw)
             start, end = time_range.values()
             processed_motions.append({
                 'start': start,

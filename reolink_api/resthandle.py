@@ -1,12 +1,17 @@
-import json
+from typing import (
+    Dict,
+    List,
+    Optional
+)
 import requests
+from loguru import logger
 
 
 class Request:
     proxies = None
 
     @staticmethod
-    def post(url: str, data, params=None) -> requests.Response or None:
+    def post(url: str, data: List[Dict], params=None) -> Optional[requests.Response]:
         """
         Post request
         :param params:
@@ -27,11 +32,11 @@ class Request:
             else:
                 raise ValueError(f"Http Request had non-200 Status: {r.status_code}", r.status_code)
         except Exception as e:
-            print("Post Error\n", e)
+            logger.error("Post Error\n", e)
             raise
 
     @staticmethod
-    def get(url, params, timeout=1) -> json or None:
+    def get(url: str, params: Dict, timeout: int = 1) -> Optional[requests.Response]:
         """
         Get request
         :param url:
@@ -41,8 +46,7 @@ class Request:
         """
         try:
             data = requests.get(url=url, verify=False, params=params, timeout=timeout, proxies=Request.proxies)
-            
             return data
         except Exception as e:
-            print("Get Error\n", e)
+            logger.error("Get Error\n", e)
             raise

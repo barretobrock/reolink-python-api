@@ -1,5 +1,6 @@
 import os
 from threading import ThreadError
+from loguru import logger
 import cv2
 from reolink_api.util import threaded
 
@@ -12,7 +13,8 @@ class RtspClient:
         - https://stackoverflow.com/questions/55828451/video-streaming-from-ip-camera-in-python-using-opencv-cv2-videocapture
     """
 
-    def __init__(self, ip, username, password, port=554, profile="main", use_udp=True, callback=None, **kwargs):
+    def __init__(self, ip: str, username: str, password: str, port: int = 554, profile: str = "main",
+                 use_udp: bool = True, callback=None, **kwargs):
         """
         RTSP client is used to retrieve frames from the camera in a stream
 
@@ -34,12 +36,8 @@ class RtspClient:
         self.password = password
         self.port = port
         self.proxy = kwargs.get("proxies")
-        self.url = "rtsp://" + self.username + ":" + self.password + "@" + \
-                   self.ip + ":" + str(self.port) + "//h264Preview_01_" + profile
-        if use_udp:
-            capture_options = capture_options + 'udp'
-        else:
-            capture_options = capture_options + 'tcp'
+        self.url = f'rtsp://{self.username}:{self.password}@{self.ip}:{self.port}//h264Preview_01_{profile}'
+        capture_options += 'udp' if use_udp else 'tcp'
 
         os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = capture_options
 
@@ -50,7 +48,7 @@ class RtspClient:
         # To CAP_FFMPEG or not To ?
         self.capture = cv2.VideoCapture(self.url, cv2.CAP_FFMPEG)
 
-    def _stream_blocking(self):
+    def _stream_blocking(self) -> object:
         while True:
             try:
                 if self.capture.isOpened():
@@ -58,11 +56,11 @@ class RtspClient:
                     if ret:
                         yield frame
                 else:
-                    print("stream closed")
+                    logger.info("stream closed")
                     self.capture.release()
                     return
             except Exception as e:
-                print(e)
+                logger.error(e)
                 self.capture.release()
                 return
 
@@ -75,17 +73,17 @@ class RtspClient:
                     if ret:
                         self.callback(frame)
                 else:
-                    print("stream is closed")
+                    logger.info("stream is closed")
                     self.stop_stream()
             except ThreadError as e:
-                print(e)
+                logger.error(e)
                 self.stop_stream()
 
     def stop_stream(self):
         self.capture.release()
         self.thread_cancelled = True
 
-    def open_stream(self):
+    def open_stream(self) -> object:
         """
         Opens OpenCV Video stream and returns the result according to the OpenCV documentation
         https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1
@@ -95,7 +93,7 @@ class RtspClient:
         if self.capture is None or not self.capture.isOpened():
             self._open_video_capture()
 
-        print("opening stream")
+        logger.info("opening stream")
 
         if self.callback is None:
             return self._stream_blocking()

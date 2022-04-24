@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "reolink_api"
-version = '1.0.0'
+version = '1.0.1'
 description = "Unofficial Reolink API fork for personal use in Python 3.10"
 authors = ["bobrock <bobrock@tuta.io>"]
 license = "GPL-3.0"
@@ -19,6 +19,8 @@ include = ["CHANGELOG.md"]
 python = "^3.10"
 Pillow = "9.1.0"
 PySocks = "1.7.1"
+PyYAML = "6.0"
+loguru = "0.6.0"
 numpy = "^1.22.3"
 opencv-python = "4.5.5.64"
 requests = "^2.27.1"

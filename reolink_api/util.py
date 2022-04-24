@@ -1,8 +1,9 @@
+from typing import Callable
 from threading import Thread
 
 
-def threaded(fn):
-    def wrapper(*args, **kwargs):
+def threaded(fn) -> Callable:
+    def wrapper(*args, **kwargs) -> Thread:
         thread = Thread(target=fn, args=args, kwargs=kwargs)
         thread.daemon = True
         thread.start()
