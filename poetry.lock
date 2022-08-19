@@ -402,7 +402,7 @@ test = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "054702c4d3e9844000a0b3612c93343e7e7880b362d83a7c4ff283013d70fbb7"
+content-hash = "d9a03e22e4d4f49bcf23156012a19f52006d16ed2d8e308153dc5df9383ea418"
 
 [metadata.files]
 atomicwrites = []

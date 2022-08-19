@@ -17,12 +17,12 @@ include = ["CHANGELOG.md"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Pillow = "^9.1.0"
+Pillow = "^9.2.0"
 PySocks = "^1.7.1"
 PyYAML = "^6.0"
 loguru = "^0.6.0"
 numpy = "^1.22.3"
-opencv-python = "^4.5.5.64"
+opencv-python = "^4.6.0.66"
 requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
