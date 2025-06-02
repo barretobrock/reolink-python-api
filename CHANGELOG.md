@@ -15,6 +15,10 @@ _Note: 'Unreleased' section below is used for untagged changes that will be issu
 #### Security
 __BEGIN-CHANGELOG__
  
+### [1.1.2] - 2025-06-02
+#### Changed
+ - Loosen loguru reqs
+ 
 ### [1.1.1] - 2025-06-02
 #### Added
  - Loosened pinned versions (yikes -- this is a library)
