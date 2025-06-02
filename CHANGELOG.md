@@ -15,6 +15,11 @@ _Note: 'Unreleased' section below is used for untagged changes that will be issu
 #### Security
 __BEGIN-CHANGELOG__
  
+### [1.1.1] - 2025-06-02
+#### Added
+ - Loosened pinned versions (yikes -- this is a library)
+ - Tested in py312, likely need to more thoroughly test later
+ 
 ### [1.0.1] - 2022-04-24
 #### Added
  - More type hints (albeit they'll need to be made more precise later)

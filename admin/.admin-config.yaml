@@ -1,0 +1,6 @@
+PROJECT: reolink-python-api
+PY_LIB_NAME: reolink_api
+PROJECT_DIR: ${HOME}/extras/${PROJECT}
+VENV_NAME: reolink-312
+VENV_PATH: ${HOME}/venvs/${VENV_NAME}/bin/python3
+MAIN_BRANCH: master
